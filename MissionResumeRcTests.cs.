@@ -1,0 +1,17 @@
+I compared all 20 cases in MissionResumeRcTests.cs against your capture field by field. They match on every value the capture contains. I did this by reading both, not by running anything.
+
+What matches (20 of 20)
+
+Order and IDs: RC-01 to RC-20 in capture order, with no gaps or duplicates.
+Captured position: all 20 x/y/z values are copied exactly, including the odd ones like RC-06 (8.35, 19.35, 14.2), RC-10 (66.75, -6.4, 23.1) and RC-17 (138.15, -11.2, 64.85).
+Health: all 20 values match, from 20 at RC-01 down to 4 at RC-17.
+Loot, chests, enemies: the counts match for every row. The tests build IDs as LOOT-01 to LOOT-N (and likewise for chests and enemies). I checked that every capture list is an unbroken run from 01, so the generated IDs equal the capture's.
+Motion state: each is mapped from the capture: Grounded, In Combat, Opening Chest, Jumping or Falling.
+
+Where the tests go beyond the capture
+These aren't mismatches. They are places where the capture is silent and I made a choice:
+
+Grounded resume positions are assumed equal to the captured position. For 15 rows, the expected resume point is the live position at quit. The real rule is "resume at lastSafePosition", and the capture doesn't record whether the player was near a pit. Two rows are the riskiest guesses. RC-09 is "walking down the ledge path toward Pit A", and RC-18 is crossing stepping stones past Pit B. If either was near a pit edge, the true safe point differs. I'd treat both as candidates for "requires additional data" unless you know they were safe.
+Five positions are explicitly left open. RC-06, 10, 11, 16 and 17 have no resume position, and those tests finish Inconclusive after the other four fields pass.
+Test-only setup values. Max health 20 and the engaged enemy ENEMY-12 for Combat rows are my setup assumptions. They don't come from the capture and don't affect the expected values.
+Chest-in-progress rows. RC-04, 13 and 19 are captured while opening a chest, and the capture already lists that chest as opened. The tests expect it opened
